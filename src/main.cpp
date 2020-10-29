@@ -7,20 +7,80 @@
 #include <string>
 #include <iostream>
 
-const wchar_t* won = L"원";
-const wchar_t* ship = L"십";
-const wchar_t* bec = L"백";
-const wchar_t* chun = L"천";
-const wchar_t* man = L"만";
-const wchar_t* uc = L"억";
+const char8_t* won = u8"원";
+const char8_t* ship = u8"십";
+const char8_t* bec = u8"백";
+const char8_t* chun = u8"천";
+const char8_t* man = u8"만";
+const char8_t* uc = u8"억";
 
 void help() {
     puts("Usage:");
     puts("  --max <integer> - set maximum value for generated value (default 999,999,999,999)");
 }
 
-std::wstring value_to_korean(unsigned long long value) {
-    return L"UNIMPLEMENTED";
+std::u8string value_to_korean(unsigned long long value) {
+    std::u8string s;
+
+    unsigned long long temp;
+    if(temp = (value / 1000000000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(man);
+    }
+    if(temp = (value / 100000000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(chun);
+    }
+    if(temp = (value / 10000000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(bec);
+    }
+    if(temp = (value / 1000000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(ship);
+    }
+    if(temp = (value / 100000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(uc);
+    } else if(!s.empty()) {
+        s.append(uc);
+    }
+    if(temp = (value / 10000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(chun);
+    }
+    if(temp = (value / 1000000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(bec);
+    }
+    if(temp = (value / 100000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(ship);
+    }
+    if(temp = (value / 10000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(man);
+    } else if(!s.empty()) {
+        s.append(man);
+    }
+    if(temp = (value / 1000) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(chun);
+    }
+    if(temp = (value / 100) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(bec);
+    }
+    if(temp = (value / 10) % 10; temp > 0) {
+        s.push_back('0' + temp);
+        s.append(ship);
+    }
+    if(temp = value % 10; temp > 0) {
+        s.push_back('0' + temp);
+    }
+    s.append(won);
+
+    return s;
 }
 
 int main(int argc, char **argv) {
@@ -47,7 +107,10 @@ int main(int argc, char **argv) {
     printf("\nGot value \"%llu\", hit enter to continue...", value);
     std::cin.get();
 
-    std::wcout << "Result: " << value_to_korean(value) << std::endl;
+    std::cout << "Result: ";
+    auto value_str = value_to_korean(value);
+    std::cout.write((char*)value_str.c_str(), value_str.size());
+    std::cout << std::endl;
 
     return 0;
 }
