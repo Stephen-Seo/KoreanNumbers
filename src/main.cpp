@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 const char8_t* won = u8"원";
 const char8_t* ship = u8"십";
@@ -88,7 +89,10 @@ int main(int argc, char **argv) {
 
     --argc; ++argv;
     while(argc > 0) {
-        if(std::strcmp(argv[0], "--max") == 0 && argc > 1) {
+        if(std::strcmp(argv[0], "--help") == 0 || std::strcmp(argv[0], "-h") == 0) {
+            help();
+            return 0;
+        } else if(std::strcmp(argv[0], "--max") == 0 && argc > 1) {
             --argc; ++argv;
             max = std::strtoull(argv[0], nullptr, 0);
         }
@@ -104,7 +108,25 @@ int main(int argc, char **argv) {
         value = r_dist(r_eng);
     }
 
-    printf("\nGot value \"%llu\", hit enter to continue...", value);
+    printf("\nGot value \"");
+    {
+        std::string s;
+        unsigned long long temp = value;
+        unsigned char count = 0;
+        while(temp > 0) {
+            ++count;
+            s.push_back('0' + temp % 10);
+            temp /= 10;
+            if(count == 3 && temp > 0) {
+                s.push_back(',');
+                count = 0;
+            }
+        }
+        std::reverse(s.begin(), s.end());
+        std::cout << s;
+    }
+    printf("\", hit enter to continue...");
+
     std::cin.get();
 
     std::cout << "Result: ";
