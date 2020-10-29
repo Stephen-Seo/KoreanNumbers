@@ -1,4 +1,4 @@
-COMMON_CXXFLAGS = -Wall -Wextra -Wpedantic
+COMMON_CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++20
 ifdef DEBUG
 	CXXFLAGS = -O0 -g ${COMMON_CXXFLAGS}
 else
