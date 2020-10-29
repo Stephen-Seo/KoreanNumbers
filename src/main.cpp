@@ -25,59 +25,86 @@ std::u8string value_to_korean(unsigned long long value) {
 
     unsigned long long temp;
     if(temp = (value / 1000000000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(man);
     }
     if(temp = (value / 100000000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(chun);
     }
     if(temp = (value / 10000000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(bec);
     }
     if(temp = (value / 1000000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(ship);
     }
     if(temp = (value / 100000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(uc);
     } else if(!s.empty()) {
         s.append(uc);
     }
     if(temp = (value / 10000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(chun);
     }
     if(temp = (value / 1000000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(bec);
     }
     if(temp = (value / 100000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(ship);
     }
     if(temp = (value / 10000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(man);
     } else if(!s.empty()) {
         s.append(man);
     }
     if(temp = (value / 1000) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(chun);
     }
     if(temp = (value / 100) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(bec);
     }
     if(temp = (value / 10) % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(temp != 1) {
+            s.push_back('0' + temp);
+        }
         s.append(ship);
     }
     if(temp = value % 10; temp > 0) {
         s.push_back('0' + temp);
+    }
+    if(s.empty()) {
+        s.push_back('0');
     }
     s.append(won);
 
