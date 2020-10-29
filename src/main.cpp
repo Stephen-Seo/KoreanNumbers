@@ -54,6 +54,7 @@ std::u8string value_to_korean(unsigned long long value) {
         }
         s.append(uc);
     } else if(!s.empty()) {
+        s.push_back('1');
         s.append(uc);
     }
     if(temp = (value / 10000000) % 10; temp > 0) {
