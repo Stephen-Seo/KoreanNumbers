@@ -113,7 +113,7 @@ std::u8string value_to_korean(unsigned long long value) {
 }
 
 int main(int argc, char **argv) {
-    unsigned long long max = 999999999999;
+    unsigned long long max = 9999999999999;
 
     --argc; ++argv;
     while(argc > 0) {
