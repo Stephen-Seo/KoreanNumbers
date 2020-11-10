@@ -256,7 +256,10 @@ int main(int argc, char **argv) {
         --argc; ++argv;
     }
 
-    if(isAlt && max > 99) { max = 99; }
+    if(isAlt) {
+        printf("Using alternate Korean numbers, ");
+        if(max > 99) { max = 99; }
+    }
     printf("Maximum value is set to %llu\n", max);
 
     unsigned long long value;
