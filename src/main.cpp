@@ -8,16 +8,37 @@
 #include <iostream>
 #include <algorithm>
 
-const char8_t* won = u8"원";
+//const char8_t* won = u8"원";
 const char8_t* ship = u8"십";
 const char8_t* bec = u8"백";
 const char8_t* chun = u8"천";
 const char8_t* man = u8"만";
 const char8_t* uc = u8"억";
 
+const char8_t* hana = u8"하나";
+const char8_t* dul = u8"둘";
+const char8_t* set = u8"셋";
+const char8_t* net = u8"넷";
+const char8_t* dasut = u8"다섯";
+const char8_t* yusut = u8"여섯";
+const char8_t* ilgop = u8"일곱";
+const char8_t* yudul = u8"여덟";
+const char8_t* ahop = u8"아홉";
+
+const char8_t* yul = u8"열";
+const char8_t* sumul = u8"스물";
+const char8_t* suhlun = u8"서른";
+const char8_t* mahun = u8"마흔";
+const char8_t* shin = u8"쉰";
+const char8_t* yesun = u8"예순";
+const char8_t* ilhun = u8"일흔";
+const char8_t* yuhdun = u8"여든";
+const char8_t* ahun = u8"아흔";
+
 void help() {
     puts("Usage:");
     puts("  --max <integer> - set maximum value for generated value (default 999,999,999,999)");
+    puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
 }
 
 std::u8string value_to_korean(unsigned long long value) {
@@ -107,13 +128,93 @@ std::u8string value_to_korean(unsigned long long value) {
     if(s.empty()) {
         s.push_back('0');
     }
-    s.append(won);
+//    s.append(won);
+
+    return s;
+}
+
+std::u8string value_to_korean_alt(unsigned long long value) {
+    std::u8string s;
+
+    switch(value / 10) {
+    case 9:
+        s.append(ahun);
+        break;
+    case 8:
+        s.append(yuhdun);
+        break;
+    case 7:
+        s.append(ilhun);
+        break;
+    case 6:
+        s.append(yesun);
+        break;
+    case 5:
+        s.append(shin);
+        break;
+    case 4:
+        s.append(mahun);
+        break;
+    case 3:
+        s.append(suhlun);
+        break;
+    case 2:
+        s.append(sumul);
+        break;
+    case 1:
+        s.append(yul);
+        break;
+    default:
+        break;
+    }
+
+    switch(value % 10) {
+    case 9:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(ahop);
+        break;
+    case 8:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(yudul);
+        break;
+    case 7:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(ilgop);
+        break;
+    case 6:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(yusut);
+        break;
+    case 5:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(dasut);
+        break;
+    case 4:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(net);
+        break;
+    case 3:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(set);
+        break;
+    case 2:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(dul);
+        break;
+    case 1:
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(hana);
+        break;
+    default:
+        break;
+    }
 
     return s;
 }
 
 int main(int argc, char **argv) {
     unsigned long long max = 9999999999999;
+    bool isAlt = false;
 
     --argc; ++argv;
     while(argc > 0) {
@@ -123,10 +224,13 @@ int main(int argc, char **argv) {
         } else if(std::strcmp(argv[0], "--max") == 0 && argc > 1) {
             --argc; ++argv;
             max = std::strtoull(argv[0], nullptr, 0);
+        } else if(std::strcmp(argv[0], "-a") == 0 || std::strcmp(argv[0], "--alt") == 0) {
+            isAlt = true;
         }
         --argc; ++argv;
     }
 
+    if(isAlt && max > 99) { max = 99; }
     printf("Maximum value is set to %llu\n", max);
 
     unsigned long long value;
@@ -158,7 +262,7 @@ int main(int argc, char **argv) {
     std::cin.get();
 
     std::cout << "Result: ";
-    auto value_str = value_to_korean(value);
+    auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
     std::cout.write((char*)value_str.c_str(), value_str.size());
     std::cout << std::endl;
 
