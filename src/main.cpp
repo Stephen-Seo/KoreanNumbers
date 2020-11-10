@@ -8,12 +8,23 @@
 #include <iostream>
 #include <algorithm>
 
-//const char8_t* won = u8"원";
+const char8_t* il = u8"일";
+const char8_t* ee = u8"이";
+const char8_t* sam = u8"삼";
+const char8_t* sa = u8"사";
+const char8_t* oh = u8"오";
+const char8_t* yuk = u8"육";
+const char8_t* chil = u8"칠";
+const char8_t* pal = u8"팔";
+const char8_t* gu = u8"구";
+
 const char8_t* ship = u8"십";
 const char8_t* bec = u8"백";
 const char8_t* chun = u8"천";
 const char8_t* man = u8"만";
 const char8_t* uc = u8"억";
+const char8_t* jo = u8"조";
+//const char8_t* won = u8"원";
 
 const char8_t* hana = u8"하나";
 const char8_t* dul = u8"둘";
@@ -41,89 +52,104 @@ void help() {
     puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
 }
 
+const char8_t* digit_to_kword(int n) {
+    switch(n) {
+    case 9:
+        return gu;
+    case 8:
+        return pal;
+    case 7:
+        return chil;
+    case 6:
+        return yuk;
+    case 5:
+        return oh;
+    case 4:
+        return sa;
+    case 3:
+        return sam;
+    case 2:
+        return ee;
+    case 1:
+        return il;
+    default:
+        return u8"";
+    }
+}
+
 std::u8string value_to_korean(unsigned long long value) {
     std::u8string s;
 
     unsigned long long temp;
     if(temp = (value / 1000000000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
-        s.append(man);
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
+        s.append(jo);
     }
     if(temp = (value / 100000000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(chun);
     }
     if(temp = (value / 10000000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(bec);
     }
     if(temp = (value / 1000000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(ship);
     }
     if(temp = (value / 100000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(uc);
     } else if(!s.empty()) {
-        s.push_back('1');
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(il);
         s.append(uc);
     }
     if(temp = (value / 10000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(chun);
     }
     if(temp = (value / 1000000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(bec);
     }
     if(temp = (value / 100000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(ship);
     }
     if(temp = (value / 10000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(man);
     } else if(!s.empty()) {
         s.append(man);
     }
     if(temp = (value / 1000) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(chun);
     }
     if(temp = (value / 100) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(bec);
     }
     if(temp = (value / 10) % 10; temp > 0) {
-        if(temp != 1) {
-            s.push_back('0' + temp);
-        }
+        if(!s.empty()) { s.push_back(' '); }
+        if(temp != 1) { s.append(digit_to_kword(temp)); }
         s.append(ship);
     }
     if(temp = value % 10; temp > 0) {
-        s.push_back('0' + temp);
+        if(!s.empty()) { s.push_back(' '); }
+        s.append(digit_to_kword(temp));
     }
     if(s.empty()) {
         s.push_back('0');
