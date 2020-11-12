@@ -257,6 +257,7 @@ void printValue(unsigned long long value) {
 }
 
 int main(int argc, char **argv) {
+    unsigned long long min = 1;
     unsigned long long max = 9999999999999;
     bool isAlt = false;
     bool reverse = false;
@@ -273,20 +274,29 @@ int main(int argc, char **argv) {
             isAlt = true;
         } else if(std::strcmp(argv[0], "-r") == 0 || std::strcmp(argv[0], "--reverse") == 0) {
             reverse = true;
+        } else if(std::strcmp(argv[0], "--min") == 0 && argc > 1) {
+            --argc; ++argv;
+            min = std::strtoull(argv[0], nullptr, 0);
         }
         --argc; ++argv;
+    }
+
+    if(min == 0) {
+        min = 1;
+    } else if(min > max) {
+        min = max;
     }
 
     if(isAlt) {
         printf("Using alternate Korean numbers, ");
         if(max > 99) { max = 99; }
     }
-    printf("Maximum value is set to %llu\n", max);
+    printf("Min value is set to %llu, Max value is set to %llu\n", min, max);
 
     unsigned long long value;
     {
         std::default_random_engine r_eng(std::chrono::steady_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<unsigned long long> r_dist(1, max);
+        std::uniform_int_distribution<unsigned long long> r_dist(min, max);
         value = r_dist(r_eng);
     }
 
