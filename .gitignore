@@ -4,3 +4,4 @@ src/*.o
 compile_commands.commands.json
 compile_commands.json
 .clangd/
+.cache/

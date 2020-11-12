@@ -36,20 +36,21 @@ const char8_t* ilgop = u8"일곱";
 const char8_t* yudul = u8"여덟";
 const char8_t* ahop = u8"아홉";
 
-const char8_t* yul = u8"열";
-const char8_t* sumul = u8"스물";
-const char8_t* suhlun = u8"서른";
-const char8_t* mahun = u8"마흔";
-const char8_t* shin = u8"쉰";
-const char8_t* yesun = u8"예순";
-const char8_t* ilhun = u8"일흔";
-const char8_t* yuhdun = u8"여든";
-const char8_t* ahun = u8"아흔";
+const char8_t* yul = u8"열";        // 10
+const char8_t* sumul = u8"스물";    // 20
+const char8_t* suhlun = u8"서른";   // 30
+const char8_t* mahun = u8"마흔";    // 40
+const char8_t* shin = u8"쉰";       // 50
+const char8_t* yesun = u8"예순";    // 60
+const char8_t* ilhun = u8"일흔";    // 70
+const char8_t* yuhdun = u8"여든";   // 80
+const char8_t* ahun = u8"아흔";     // 90
 
 void help() {
     puts("Usage:");
     puts("  --max <integer> - set maximum value for generated value (default 999,999,999,999)");
     puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
+    puts("  [-r | --reverse] - display Korean form first");
 }
 
 const char8_t* digit_to_kword(int n) {
@@ -238,9 +239,27 @@ std::u8string value_to_korean_alt(unsigned long long value) {
     return s;
 }
 
+void printValue(unsigned long long value) {
+    std::string s;
+    unsigned long long temp = value;
+    unsigned char count = 0;
+    while(temp > 0) {
+        ++count;
+        s.push_back('0' + temp % 10);
+        temp /= 10;
+        if(count == 3 && temp > 0) {
+            s.push_back(',');
+            count = 0;
+        }
+    }
+    std::reverse(s.begin(), s.end());
+    std::cout << s;
+}
+
 int main(int argc, char **argv) {
     unsigned long long max = 9999999999999;
     bool isAlt = false;
+    bool reverse = false;
 
     --argc; ++argv;
     while(argc > 0) {
@@ -252,6 +271,8 @@ int main(int argc, char **argv) {
             max = std::strtoull(argv[0], nullptr, 0);
         } else if(std::strcmp(argv[0], "-a") == 0 || std::strcmp(argv[0], "--alt") == 0) {
             isAlt = true;
+        } else if(std::strcmp(argv[0], "-r") == 0 || std::strcmp(argv[0], "--reverse") == 0) {
+            reverse = true;
         }
         --argc; ++argv;
     }
@@ -265,35 +286,33 @@ int main(int argc, char **argv) {
     unsigned long long value;
     {
         std::default_random_engine r_eng(std::chrono::steady_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<unsigned long long> r_dist(0, max);
+        std::uniform_int_distribution<unsigned long long> r_dist(1, max);
         value = r_dist(r_eng);
     }
 
-    printf("\nGot value \"");
-    {
-        std::string s;
-        unsigned long long temp = value;
-        unsigned char count = 0;
-        while(temp > 0) {
-            ++count;
-            s.push_back('0' + temp % 10);
-            temp /= 10;
-            if(count == 3 && temp > 0) {
-                s.push_back(',');
-                count = 0;
-            }
-        }
-        std::reverse(s.begin(), s.end());
-        std::cout << s;
+    if(reverse) {
+        auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
+        printf("\nGot Korean form \"");
+        std::cout.write((char*)value_str.c_str(), value_str.size());
+        std::cout << "\"";
+    } else {
+        printf("\nGot value \"");
+        printValue(value);
+        printf("\"");
     }
-    printf("\", hit enter to continue...");
+    printf(", hit enter to continue...");
 
     std::cin.get();
 
     std::cout << "Result: ";
-    auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
-    std::cout.write((char*)value_str.c_str(), value_str.size());
-    std::cout << std::endl;
+    if(reverse) {
+        printValue(value);
+        std::cout << std::endl;
+    } else {
+        auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
+        std::cout.write((char*)value_str.c_str(), value_str.size());
+        std::cout << std::endl;
+    }
 
     return 0;
 }
