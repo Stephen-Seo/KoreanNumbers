@@ -8,6 +8,9 @@
 #include <iostream>
 #include <algorithm>
 
+#define KOREAN_NUMBERS_MAX 9999999999999
+#define KOREAN_NUMBERS_ALT_MAX 99
+
 const char8_t* il = u8"일";
 const char8_t* ee = u8"이";
 const char8_t* sam = u8"삼";
@@ -258,7 +261,7 @@ void printValue(unsigned long long value) {
 
 int main(int argc, char **argv) {
     unsigned long long min = 1;
-    unsigned long long max = 9999999999999;
+    unsigned long long max = KOREAN_NUMBERS_MAX;
     bool isAlt = false;
     bool reverse = false;
 
@@ -289,7 +292,9 @@ int main(int argc, char **argv) {
 
     if(isAlt) {
         printf("Using alternate Korean numbers, ");
-        if(max > 99) { max = 99; }
+        if(max > KOREAN_NUMBERS_ALT_MAX) { max = KOREAN_NUMBERS_ALT_MAX; }
+    } else if(max > KOREAN_NUMBERS_MAX) {
+        max = KOREAN_NUMBERS_MAX;
     }
     printf("Min value is set to %llu, Max value is set to %llu\n", min, max);
 
