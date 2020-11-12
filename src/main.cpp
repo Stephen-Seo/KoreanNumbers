@@ -8,8 +8,8 @@
 #include <iostream>
 #include <algorithm>
 
-#define KOREAN_NUMBERS_MAX 9999999999999
-#define KOREAN_NUMBERS_ALT_MAX 99
+#define KOREAN_NUMBERS_MAX 9999999999999llu
+#define KOREAN_NUMBERS_ALT_MAX 99llu
 
 const char8_t* il = u8"일";
 const char8_t* ee = u8"이";
@@ -51,7 +51,9 @@ const char8_t* ahun = u8"아흔";     // 90
 
 void help() {
     puts("Usage:");
-    puts("  --max <integer> - set maximum value for generated value (default 999,999,999,999)");
+    puts("  --min <integer> - set minimum value for generated value (default 1)");
+    printf("  --max <integer> - set maximum value for generated value (default %llu, alt default %llu)\n",
+            KOREAN_NUMBERS_MAX, KOREAN_NUMBERS_ALT_MAX);
     puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
     puts("  [-r | --reverse] - display Korean form first");
 }
@@ -286,15 +288,22 @@ int main(int argc, char **argv) {
 
     if(min == 0) {
         min = 1;
-    } else if(min > max) {
-        min = max;
     }
 
     if(isAlt) {
         printf("Using alternate Korean numbers, ");
         if(max > KOREAN_NUMBERS_ALT_MAX) { max = KOREAN_NUMBERS_ALT_MAX; }
-    } else if(max > KOREAN_NUMBERS_MAX) {
-        max = KOREAN_NUMBERS_MAX;
+        else if(max == 0) { max = 1; }
+    } else {
+        if(max > KOREAN_NUMBERS_MAX) {
+            max = KOREAN_NUMBERS_MAX;
+        } else if(max == 0) {
+            max = 1;
+        }
+    }
+
+    if(min > max) {
+        min = max;
     }
     printf("Min value is set to %llu, Max value is set to %llu\n", min, max);
 
