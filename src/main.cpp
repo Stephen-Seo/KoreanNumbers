@@ -56,6 +56,7 @@ void help() {
             KOREAN_NUMBERS_MAX, KOREAN_NUMBERS_ALT_MAX);
     puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
     puts("  [-r | --reverse] - display Korean form first");
+    puts("  [-d | --digits] - do not randomize digits when non-alternate");
 }
 
 const char8_t* digit_to_kword(int n) {
@@ -261,11 +262,28 @@ void printValue(unsigned long long value) {
     std::cout << s;
 }
 
+unsigned long long clamp_digits(unsigned int digits, unsigned long long value) {
+    if(digits == 0) {
+        digits = 1;
+    }
+
+    unsigned long long temp = 0;
+    while(digits-- > 0) {
+        temp = temp * 10 + 9;
+    }
+    if(temp < value) {
+        return temp;
+    } else {
+        return value;
+    }
+}
+
 int main(int argc, char **argv) {
     unsigned long long min = 1;
     unsigned long long max = KOREAN_NUMBERS_MAX;
     bool isAlt = false;
     bool reverse = false;
+    bool randomizeDigits = true;
 
     --argc; ++argv;
     while(argc > 0) {
@@ -282,6 +300,8 @@ int main(int argc, char **argv) {
         } else if(std::strcmp(argv[0], "--min") == 0 && argc > 1) {
             --argc; ++argv;
             min = std::strtoull(argv[0], nullptr, 0);
+        } else if(std::strcmp(argv[0], "-d") == 0 || std::strcmp(argv[0], "--digits") == 0) {
+            randomizeDigits = false;
         }
         --argc; ++argv;
     }
@@ -307,10 +327,32 @@ int main(int argc, char **argv) {
     }
     printf("Min value is set to %llu, Max value is set to %llu\n", min, max);
 
+    unsigned int digits = 0;
+    if(!isAlt && randomizeDigits) {
+        unsigned long long temp = max;
+        while(temp > 0) {
+            ++digits;
+            temp /= 10;
+        }
+        if(digits == 0) { digits = 1; }
+        printf("%u digits detected for max value, "
+               "randomizing the number of digits...\n",
+                digits);
+    }
+
     unsigned long long value;
     {
         std::default_random_engine r_eng(std::chrono::steady_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<unsigned long long> r_dist(min, max);
+        if(!isAlt && randomizeDigits) {
+            std::uniform_int_distribution<unsigned int> d_dist(1, digits);
+            digits = d_dist(r_eng);
+        }
+        std::uniform_int_distribution<unsigned long long> r_dist(
+            min,
+            isAlt || !randomizeDigits ?
+                max :
+                clamp_digits(digits, max)
+            );
         value = r_dist(r_eng);
     }
 
