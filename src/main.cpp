@@ -57,6 +57,7 @@ void help() {
     puts("  [-a | --alt] - use alternate Korean Numbers (up to 99)");
     puts("  [-r | --reverse] - display Korean form first");
     puts("  [-d | --digits] - do not randomize digits when non-alternate");
+    puts("  [-l | --list] - list \"base\" numbers (can combine with --alt)");
 }
 
 const char8_t* digit_to_kword(int n) {
@@ -278,12 +279,63 @@ unsigned long long clamp_digits(unsigned int digits, unsigned long long value) {
     }
 }
 
+std::ostream& operator<<(std::ostream &os, const std::u8string &str) {
+    os.write(reinterpret_cast<const char*>(str.data()), str.size());
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const char8_t *str8) {
+    const char *cstr = reinterpret_cast<const char*>(str8);
+    os.write(cstr, strlen(cstr));
+    return os;
+}
+
+void doPrintBasic(bool isAlt) {
+    if(isAlt) {
+        std::cout << "\"1\" or \"one\" (alt) is " << hana << std::endl;
+        std::cout << "\"2\" or \"two\" (alt) is " << dul << std::endl;
+        std::cout << "\"3\" or \"three\" (alt) is " << set << std::endl;
+        std::cout << "\"4\" or \"four\" (alt) is " << net << std::endl;
+        std::cout << "\"5\" or \"five\" (alt) is " << dasut << std::endl;
+        std::cout << "\"6\" or \"six\" (alt) is " << yusut << std::endl;
+        std::cout << "\"7\" or \"seven\" (alt) is " << ilgop << std::endl;
+        std::cout << "\"8\" or \"eight\" (alt) is " << yudul << std::endl;
+        std::cout << "\"9\" or \"nine\" (alt) is " << ahop << std::endl;
+        std::cout << "\"10\" or \"ten\" (alt) is " << yul << std::endl;
+        std::cout << "\"20\" or \"twenty\" (alt) is " << sumul << std::endl;
+        std::cout << "\"30\" or \"thirty\" (alt) is " << suhlun << std::endl;
+        std::cout << "\"40\" or \"fourty\" (alt) is " << mahun << std::endl;
+        std::cout << "\"50\" or \"fifty\" (alt) is " << shin << std::endl;
+        std::cout << "\"60\" or \"sixty\" (alt) is " << yesun << std::endl;
+        std::cout << "\"70\" or \"seventy\" (alt) is " << ilhun << std::endl;
+        std::cout << "\"80\" or \"eighty\" (alt) is " << yuhdun << std::endl;
+        std::cout << "\"90\" or \"ninety\" (alt) is " << ahun << std::endl;
+    } else {
+        std::cout << "\"1\" or \"one\" is " << il << std::endl;
+        std::cout << "\"2\" or \"two\" is " << ee << std::endl;
+        std::cout << "\"3\" or \"three\" is " << sam << std::endl;
+        std::cout << "\"4\" or \"four\" is " << sa << std::endl;
+        std::cout << "\"5\" or \"five\" is " << oh << std::endl;
+        std::cout << "\"6\" or \"six\" is " << yuk << std::endl;
+        std::cout << "\"7\" or \"seven\" is " << chil << std::endl;
+        std::cout << "\"8\" or \"eight\" is " << pal << std::endl;
+        std::cout << "\"9\" or \"nine\" is " << gu << std::endl;
+        std::cout << "\"10\" or \"ten\" is " << ship << std::endl;
+        std::cout << "\"100\" or \"one-hundred\" is " << bec << std::endl;
+        std::cout << "\"1000\" or \"one-thousand\" is " << chun << std::endl;
+        std::cout << "\"10,000\" or \"ten-thousand\" is " << man << std::endl;
+        std::cout << "\"100,000,000\" or \"one-hundred-million\" is " << uc << std::endl;
+        std::cout << "\"1,000,000,000,000\" or \"one-trillion\" is " << jo << std::endl;
+    }
+}
+
 int main(int argc, char **argv) {
     unsigned long long min = 1;
     unsigned long long max = KOREAN_NUMBERS_MAX;
     bool isAlt = false;
     bool reverse = false;
     bool randomizeDigits = true;
+    bool printBasic = false;
 
     --argc; ++argv;
     while(argc > 0) {
@@ -302,8 +354,15 @@ int main(int argc, char **argv) {
             min = std::strtoull(argv[0], nullptr, 0);
         } else if(std::strcmp(argv[0], "-d") == 0 || std::strcmp(argv[0], "--digits") == 0) {
             randomizeDigits = false;
+        } else if(std::strcmp(argv[0], "-l") == 0 || std::strcmp(argv[0], "--list") == 0) {
+            printBasic = true;
         }
         --argc; ++argv;
+    }
+
+    if(printBasic) {
+        doPrintBasic(isAlt);
+        return 0;
     }
 
     if(min == 0) {
@@ -359,8 +418,7 @@ int main(int argc, char **argv) {
     if(reverse) {
         auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
         printf("\nGot Korean form \"");
-        std::cout.write((char*)value_str.c_str(), value_str.size());
-        std::cout << "\"";
+        std::cout << value_str << "\"";
     } else {
         printf("\nGot value \"");
         printValue(value);
@@ -376,8 +434,7 @@ int main(int argc, char **argv) {
         std::cout << std::endl;
     } else {
         auto value_str = isAlt ? value_to_korean_alt(value) : value_to_korean(value);
-        std::cout.write((char*)value_str.c_str(), value_str.size());
-        std::cout << std::endl;
+        std::cout << value_str << std::endl;
     }
 
     return 0;
